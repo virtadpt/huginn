@@ -2,6 +2,20 @@
 
 | DateOfChange   | Changes                                                                                                      |
 |----------------|--------------------------------------------------------------------------------------------------------------|
+| Jun 18, 2023   | Add Re-emit and Delete buttons to the event show page. [#3276](https://github.com/huginn/huginn/pull/3276) |
+| Jun 07, 2023   | Upgrade various gems that have been out-of-date for a long time. [#3216](https://github.com/huginn/huginn/pull/3216) |
+| May 09, 2023   | Upgrade Ruby to 3.2 after 2.7 reached its end of life.  Migrate from CoffeeScript to JavaScript. [#3216](https://github.com/huginn/huginn/pull/3216) |
+| Apr 17, 2023   | Remove `GrowlAgent`. |
+| Apr 15, 2023   | Add KeyValueStoreAgent. [#3247](https://github.com/huginn/huginn/pull/3247) |
+| Mar 12, 2023   | Twitter agents are improved so that every tweet event has an `expanded_text` in it. [3230](https://github.com/huginn/huginn/pull/3230) |
+| Mar 01, 2023   | Rails is upgraded to 6.1. [3217](https://github.com/huginn/huginn/pull/3217) |
+| Feb 19, 2023   | Add a new Liquid filter named `regex_extract`. [3220](https://github.com/huginn/huginn/pull/3220) |
+| Feb 18, 2023   | Fix permissions on /app in the Docker images. [3218](https://github.com/huginn/huginn/pull/3218) |
+| Feb 06, 2023   | BoxcarAgent is removed; the service is long gone. |
+| Dec 15, 2022   | DataOutputAgent Add dc namespace option. [3189](https://github.com/huginn/huginn/pull/3189) |
+| Aug 18, 2022   | Upgrade Ruby to 2.7 and update various gems to address security issues. [3055](https://github.com/huginn/huginn/pull/3055) |
+| Mar 26, 2022   | Add a Liquid variable referring to the agent itself as `_agent_`. [3104](https://github.com/huginn/huginn/pull/3104) |
+| Jan 08, 2022   | BasecampAgent is removed, which was written for the obsoleted API. [3056](https://github.com/huginn/huginn/pull/3056) |
 | Jan 04, 2022   | ImapFolderAgent supports the Google XOAUTH2 authentication. [2712](https://github.com/huginn/huginn/pull/2712) |
 | Jan 04, 2022   | TwitterPublishAgent emits `tweet_url`.  It takes optional parameters for the status update API. [3053](https://github.com/huginn/huginn/pull/3053) |
 | Dec 29, 2021   | WunderlistAgent is deleted long after the service shutdown. [3052](https://github.com/huginn/huginn/pull/3052) |

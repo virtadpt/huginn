@@ -4,11 +4,19 @@ if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start 'rails'
 elsif ENV['CI'] == 'true'
-  require 'coveralls'
-  Coveralls.wear!('rails')
+  require 'simplecov'
+  SimpleCov.start 'rails' do
+    require 'simplecov-lcov'
+    SimpleCov::Formatter::LcovFormatter.config do |c|
+      c.report_with_single_file = true
+      c.single_report_path = 'coverage/lcov.info'
+    end
+    formatter SimpleCov::Formatter::LcovFormatter
+    add_filter %w[version.rb initializer.rb]
+  end
 end
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'webmock/rspec'
 
@@ -32,7 +40,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = config.file_fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

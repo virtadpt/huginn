@@ -1,14 +1,9 @@
 module DotHelper
   def render_agents_diagram(agents, layout: nil)
-    if (command = ENV['USE_GRAPHVIZ_DOT']) &&
-       (svg = IO.popen([command, *%w[-Tsvg -q1 -o/dev/stdout /dev/stdin]], 'w+') { |dot|
-          dot.print agents_dot(agents, rich: true, layout: layout)
-          dot.close_write
-          dot.read
-        } rescue false)
+    if svg = dot_to_svg(agents_dot(agents, rich: true, layout:))
       decorate_svg(svg, agents).html_safe
     else
-      # Google chart request url 
+      # Google chart request url
       faraday = Faraday.new { |builder|
         builder.request :url_encoded
         builder.adapter Faraday.default_adapter
@@ -18,7 +13,7 @@ module DotHelper
       case response.status
       when 200
         # Display Base64-Encoded images
-        tag('img', src: 'data:image/jpg;base64,'+Base64.encode64(response.body))
+        tag('img', src: 'data:image/jpg;base64,' + Base64.encode64(response.body))
       when 400
         "The diagram can't be displayed because it has too many nodes. Max allowed is 80."
       when 413
@@ -29,14 +24,23 @@ module DotHelper
     end
   end
 
+  private def dot_to_svg(dot)
+    command = ENV['USE_GRAPHVIZ_DOT'] or return nil
+
+    IO.popen(%W[#{command} -Tsvg -q1 -o/dev/stdout /dev/stdin], 'w+') do |rw|
+      rw.print dot
+      rw.close_write
+      rw.read
+    rescue StandardError
+    end
+  end
+
   class DotDrawer
     def initialize(vars = {})
       @dot = ''
-      @vars = vars.symbolize_keys
-    end
-
-    def method_missing(var, *args)
-      @vars.fetch(var) { super }
+      vars.each do |key, value|
+        define_singleton_method(key) { value }
+      end
     end
 
     def to_s
@@ -88,8 +92,10 @@ module DotHelper
 
     def attr_list(attrs = nil)
       return if attrs.nil?
-      attrs = attrs.select { |key, value| value.present? }
+
+      attrs = attrs.select { |_key, value| value.present? }
       return if attrs.empty?
+
       raw '['
       attrs.each_with_index { |(key, value), i|
         raw ',' if i > 0
@@ -135,16 +141,16 @@ module DotHelper
   end
 
   def agents_dot(agents, rich: false, layout: nil)
-    draw(agents: agents,
-         agent_id: ->agent { 'a%d' % agent.id },
-         agent_label: ->agent {
+    draw(agents:,
+         agent_id: ->(agent) { 'a%d' % agent.id },
+         agent_label: ->(agent) {
            agent.name.gsub(/(.{20}\S*)\s+/) {
              # Fold after every 20+ characters
              $1 + "\n"
            }
          },
-         agent_url: ->agent { agent_path(agent.id) },
-         rich: rich) {
+         agent_url: ->(agent) { agent_path(agent.id) },
+         rich:) {
       @disabled = '#999999'
 
       def agent_node(agent)
@@ -161,7 +167,7 @@ module DotHelper
         edge(agent_id[agent],
              agent_id[receiver],
              style: ('dashed' unless receiver.propagate_immediately?),
-             label: (" #{agent.control_action}s " if agent.can_control_other_agents?),
+             label: (" #{agent.control_action.pluralize} " if agent.can_control_other_agents?),
              arrowhead: ('empty' if agent.can_control_other_agents?),
              color: (@disabled if agent.unavailable? || receiver.unavailable?))
       end
@@ -169,7 +175,7 @@ module DotHelper
       block('digraph', 'Agent Event Flow') {
         layout ||= ENV['DIAGRAM_DEFAULT_LAYOUT'].presence
         if rich && /\A[a-z]+\z/ === layout
-          statement 'graph', layout: layout, overlap: 'false'
+          statement 'graph', layout:, overlap: 'false'
         end
         statement 'node',
                   shape: 'box',
@@ -182,7 +188,7 @@ module DotHelper
                   fontsize: 10,
                   fontname: ('Helvetica' if rich)
 
-        agents.each.with_index { |agent, index|
+        agents.each.with_index { |agent, _index|
           agent_node(agent)
 
           [
@@ -243,11 +249,11 @@ module DotHelper
                 'label-danger'
               end
             ].join(' ')
-            label['style'] = 'display: none';
+            label['style'] = 'display: none'
           }
         }
       }
-      # See also: app/assets/diagram.js.coffee
+      # See also: app/assets/diagram.js
     }.at('div.agent-diagram').to_s
   end
 end
