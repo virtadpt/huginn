@@ -106,9 +106,7 @@ Please see [the Huginn Wiki](https://github.com/huginn/huginn/wiki#deploying-hug
 
 ### Heroku
 
-Try Huginn on Heroku: [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy) (Takes a few minutes to setup. Read the [documentation](https://github.com/huginn/huginn/blob/master/doc/heroku/install.md) while you are waiting and be sure to click 'View it' after launch!)
-
-Huginn launches on the free version of Heroku [with significant limitations](https://github.com/huginn/huginn/blob/master/doc/heroku/install.md). For non-experimental use, we strongly recommend Heroku's 1GB paid plan or our Docker container.
+Try Huginn on Heroku: [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy) (Takes a few minutes to setup. Read the [documentation](https://github.com/huginn/huginn/blob/master/doc/heroku/install.md) while you are waiting and be sure to click 'View it' after launch!) Huginn launches only on a paid subscription plan for Heroku. For non-experimental use, we strongly recommend Heroku's 1GB paid plan or our Docker container.
 
 ### OpenShift
 
@@ -142,9 +140,7 @@ See [private development instructions](https://github.com/huginn/huginn/wiki/Pri
 
 #### Enable the WeatherAgent
 
-In order to use the WeatherAgent you need an [API key with Wunderground](http://www.wunderground.com/weather/api/). Signup for one and then change the value of `api_key: your-key` in your seeded WeatherAgent.
-
-Note, Wunderground no longer offers free API keys. You can still use the WeatherAgent by setting the service key to darksky, and getting an [API key from DarkSky](https://darksky.net/dev).
+In order to use the WeatherAgent you need an [Weather Data API key from Pirate Weather](https://pirate-weather.apiable.io/products/weather-data). Sign up for one and then change the value of `api_key: your-key` in your seeded WeatherAgent.
 
 #### Disable SSL
 

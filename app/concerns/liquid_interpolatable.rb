@@ -179,8 +179,7 @@ module LiquidInterpolatable
 
       http = Faraday.new do |builder|
         builder.adapter :net_http
-        # builder.use FaradayMiddleware::FollowRedirects, limit: limit
-        # ...does not handle non-HTTP URLs.
+        # The follow_redirects middleware does not handle non-HTTP URLs.
       end
 
       limit.times do
@@ -246,7 +245,7 @@ module LiquidInterpolatable
 
     def regex_extract(input, regex, index = 0)
       input.to_s[Regexp.new(regex), index]
-    rescue Index
+    rescue IndexError
       nil
     end
 
